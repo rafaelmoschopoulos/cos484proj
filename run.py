@@ -90,7 +90,7 @@ def replace_masks(texts):
     n_expected = count_masks(texts)
     stop_id = mask_tokenizer.encode(f"<extra_id_{max(n_expected)}>")[0]
     tokens = mask_tokenizer(texts, return_tensors="pt", padding=True).to(DEVICE)
-    outputs = mask_model.generate(**tokens, max_length=150, do_sample=True, top_p=args.mask_top_p, num_return_sequences=1, eos_token_id=stop_id)
+    outputs = mask_model.generate(**tokens, max_length=150, do_sample=True, top_p=args.mask_top_p, num_return_sequences=1, eos_token_id=stop_id, temperature=args.mask_temperature)
     return mask_tokenizer.batch_decode(outputs, skip_special_tokens=False)
 
 
@@ -197,6 +197,7 @@ def _openai_sample(p):
 
     # sample from the openai model
     kwargs = { "engine": args.openai_model, "max_tokens": 200 }
+    kwargs["temperature"] = args.generator_temperature
     if args.do_top_p:
         kwargs['top_p'] = args.top_p
 
@@ -237,7 +238,7 @@ def sample_from_model(texts, min_words=55, prompt_tokens=30):
             elif args.do_top_k:
                 sampling_kwargs['top_k'] = args.top_k
             min_length = 50 if args.dataset in ['pubmed'] else 150
-            outputs = base_model.generate(**all_encoded, min_length=min_length, max_length=200, do_sample=True, **sampling_kwargs, pad_token_id=base_tokenizer.eos_token_id, eos_token_id=base_tokenizer.eos_token_id)
+            outputs = base_model.generate(**all_encoded, min_length=min_length, max_length=200, do_sample=True, **sampling_kwargs, pad_token_id=base_tokenizer.eos_token_id, eos_token_id=base_tokenizer.eos_token_id, temperature=args.generator_temperature)
             decoded = base_tokenizer.batch_decode(outputs, skip_special_tokens=True)
             tries += 1
 
@@ -624,7 +625,7 @@ def generate_data(dataset, key):
     if dataset in custom_datasets.DATASETS:
         data = custom_datasets.load(dataset, cache_dir)
     else:
-        data = datasets.load_dataset(dataset, split='train', cache_dir=cache_dir)[key]
+        data = datasets.load_dataset(dataset, split='train', trust_remote_code=True, cache_dir=cache_dir)[key]
 
     # get unique examples, strip whitespace, and remove newlines
     # then take just the long examples, shuffle, take the first 5,000 to tokenize to save time
@@ -671,7 +672,7 @@ def load_base_model_and_tokenizer(name):
             base_model_kwargs.update(dict(torch_dtype=torch.float16))
         if 'gpt-j' in name:
             base_model_kwargs.update(dict(revision='float16'))
-        base_model = transformers.AutoModelForCausalLM.from_pretrained(name, **base_model_kwargs, cache_dir=cache_dir)
+        base_model = transformers.AutoModelForCausalLM.from_pretrained(name, **base_model_kwargs, cache_dir=cache_dir, token=args.access_token)
     else:
         base_model = None
 
@@ -681,7 +682,7 @@ def load_base_model_and_tokenizer(name):
         optional_tok_kwargs['fast'] = False
     if args.dataset in ['pubmed']:
         optional_tok_kwargs['padding_side'] = 'left'
-    base_tokenizer = transformers.AutoTokenizer.from_pretrained(name, **optional_tok_kwargs, cache_dir=cache_dir)
+    base_tokenizer = transformers.AutoTokenizer.from_pretrained(name, **optional_tok_kwargs, cache_dir=cache_dir, token=args.access_token)
     base_tokenizer.pad_token_id = base_tokenizer.eos_token_id
 
     return base_model, base_tokenizer
@@ -741,6 +742,45 @@ def eval_supervised(data, model):
         'loss': 1 - pr_auc,
     }
 
+def download_writing_prompts():
+    # Define the data folder path and create it if it doesn't exist
+    data_folder = './data'
+    if not os.path.exists(data_folder):
+        os.makedirs(data_folder)
+
+    # Set environment variable so Kaggle API finds kaggle.json in the current working directory
+    kaggle_config_dir = os.getcwd()  # assumes kaggle.json is here
+    os.environ['KAGGLE_CONFIG_DIR'] = kaggle_config_dir
+
+    # Define the path for kaggle.json
+    kaggle_json_path = os.path.join(kaggle_config_dir, 'kaggle.json')
+
+    # Check if kaggle.json exists
+    if not os.path.exists(kaggle_json_path):
+        raise OSError(f"Could not find kaggle.json in {kaggle_config_dir}. "
+                      "Please ensure that your kaggle.json file is in this folder or copy it to ~/.kaggle.")
+
+    # Automatically adjust file permissions to 600 if possible
+    try:
+        os.chmod(kaggle_json_path, 0o600)
+    except Exception as e:
+        print(f"Warning: Unable to change permissions on {kaggle_json_path}. {e}")
+
+    from kaggle.api.kaggle_api_extended import KaggleApi
+
+    # Instantiate and authenticate Kaggle API
+    api = KaggleApi()
+    api.authenticate()
+
+    # Define the expected dataset directory path (adjust as needed based on the unzipped structure)
+    dataset_dir = os.path.join(data_folder, 'writingPrompts')
+
+    # If the dataset isn't already downloaded, do so and unzip it
+    if not os.path.exists(dataset_dir):
+        print("Downloading ratthachat/writing-prompts dataset to", data_folder)
+        api.dataset_download_files('ratthachat/writing-prompts', path=data_folder, unzip=True)
+    else:
+        print("Dataset already downloaded at", dataset_dir)
 
 if __name__ == '__main__':
     DEVICE = "mps"
@@ -778,6 +818,9 @@ if __name__ == '__main__':
     parser.add_argument('--random_fills', action='store_true')
     parser.add_argument('--random_fills_tokens', action='store_true')
     parser.add_argument('--cache_dir', type=str, default="~/.cache")
+    parser.add_argument('--access_token', type=str, default="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")
+    parser.add_argument('--mask_temperature', type=float, default=1.0)
+    parser.add_argument('--generator_temperature', type=float, default=1.0)
     args = parser.parse_args()
 
     API_TOKEN_COUNTER = 0
@@ -800,7 +843,7 @@ if __name__ == '__main__':
     else:
         base_model_name = "openai-" + args.openai_model.replace('/', '_')
     scoring_model_string = (f"-{args.scoring_model_name}" if args.scoring_model_name else "").replace('/', '_')
-    SAVE_FOLDER = f"tmp_results/{output_subfolder}{base_model_name}{scoring_model_string}-{args.mask_filling_model_name}-{sampling_string}/{START_DATE}-{START_TIME}-{precision_string}-{args.pct_words_masked}-{args.n_perturbation_rounds}-{args.dataset}-{args.n_samples}"
+    SAVE_FOLDER = f"tmp_results/{output_subfolder}{base_model_name}{scoring_model_string}-{args.mask_filling_model_name}-{sampling_string}/{START_DATE}-{START_TIME}-{precision_string}-{args.pct_words_masked}-{args.n_perturbation_rounds}-{args.dataset}-{args.n_samples}-{args.mask_temperature}-{args.generator_temperature}"
     if not os.path.exists(SAVE_FOLDER):
         os.makedirs(SAVE_FOLDER)
     print(f"Saving results to absolute path: {os.path.abspath(SAVE_FOLDER)}")
@@ -819,7 +862,7 @@ if __name__ == '__main__':
     cache_dir = args.cache_dir
     os.environ["XDG_CACHE_HOME"] = cache_dir
     # FIX THE CACHE DIR NOT BEING CREATED
-    cache_dir = os.path.expanduser(args.cache_dir)
+    #cache_dir = os.path.expanduser(args.cache_dir)
     if not os.path.exists(cache_dir):
         os.makedirs(cache_dir)
     print(f"Using cache dir {cache_dir}")
@@ -853,6 +896,10 @@ if __name__ == '__main__':
         preproc_tokenizer = mask_tokenizer
 
     load_base_model()
+
+    # Get writing prompts dataset if needed
+    if args.dataset == "writing":
+        download_writing_prompts()
 
     print(f'Loading dataset {args.dataset}...')
     data = generate_data(args.dataset, args.dataset_key)

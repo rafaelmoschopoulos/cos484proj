@@ -1,0 +1,1 @@
+python run.py --output_name main --base_model_name meta-llama/Llama-3.2-3B --mask_filling_model_name t5-base --n_perturbation_list 10 --n_samples 100 --pct_words_masked 0.3 --span_length 2 --mask_temperature 2 --generator_temperature 2 --cache_dir ./cache
