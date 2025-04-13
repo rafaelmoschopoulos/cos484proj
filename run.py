@@ -86,11 +86,12 @@ def count_masks(texts):
 
 
 # replace each masked span with a sample from T5 mask_model
-def replace_masks(texts):
+def replace_masks(texts, temperature=1):
     n_expected = count_masks(texts)
     stop_id = mask_tokenizer.encode(f"<extra_id_{max(n_expected)}>")[0]
     tokens = mask_tokenizer(texts, return_tensors="pt", padding=True).to(DEVICE)
-    outputs = mask_model.generate(**tokens, max_length=150, do_sample=True, top_p=args.mask_top_p, num_return_sequences=1, eos_token_id=stop_id, temperature=args.mask_temperature)
+    outputs = mask_model.generate(**tokens, max_length=150, do_sample=True, top_p=args.mask_top_p, num_return_sequences=1, eos_token_id=stop_id, temperature=temperature)
+    print(f"T5 with TEMP: {temperature}")
     return mask_tokenizer.batch_decode(outputs, skip_special_tokens=False)
 
 
@@ -126,10 +127,10 @@ def apply_extracted_fills(masked_texts, extracted_fills):
     return texts
 
 
-def perturb_texts_(texts, span_length, pct, ceil_pct=False):
+def perturb_texts_(texts, span_length, pct, ceil_pct=False, temperature=1):
     if not args.random_fills:
         masked_texts = [tokenize_and_mask(x, span_length, pct, ceil_pct) for x in texts]
-        raw_fills = replace_masks(masked_texts)
+        raw_fills = replace_masks(masked_texts, temperature)
         extracted_fills = extract_fills(raw_fills)
         perturbed_texts = apply_extracted_fills(masked_texts, extracted_fills)
 
@@ -139,7 +140,7 @@ def perturb_texts_(texts, span_length, pct, ceil_pct=False):
             idxs = [idx for idx, x in enumerate(perturbed_texts) if x == '']
             print(f'WARNING: {len(idxs)} texts have no fills. Trying again [attempt {attempts}].')
             masked_texts = [tokenize_and_mask(x, span_length, pct, ceil_pct) for idx, x in enumerate(texts) if idx in idxs]
-            raw_fills = replace_masks(masked_texts)
+            raw_fills = replace_masks(masked_texts, temperature)
             extracted_fills = extract_fills(raw_fills)
             new_perturbed_texts = apply_extracted_fills(masked_texts, extracted_fills)
             for idx, x in zip(idxs, new_perturbed_texts):
@@ -176,14 +177,14 @@ def perturb_texts_(texts, span_length, pct, ceil_pct=False):
     return perturbed_texts
 
 
-def perturb_texts(texts, span_length, pct, ceil_pct=False):
+def perturb_texts(texts, span_length, pct, ceil_pct=False, temperature=1):
     chunk_size = args.chunk_size
     if '11b' in mask_filling_model_name:
         chunk_size //= 2
 
     outputs = []
     for i in tqdm.tqdm(range(0, len(texts), chunk_size), desc="Applying perturbations"):
-        outputs.extend(perturb_texts_(texts[i:i + chunk_size], span_length, pct, ceil_pct=ceil_pct))
+        outputs.extend(perturb_texts_(texts[i:i + chunk_size], span_length, pct, ceil_pct=ceil_pct, temperature=temperature))
     return outputs
 
 
@@ -428,7 +429,7 @@ def get_perturbation_results(span_length=10, n_perturbations=1, n_samples=500):
     original_text = data["original"]
     sampled_text = data["sampled"]
 
-    perturb_fn = functools.partial(perturb_texts, span_length=span_length, pct=args.pct_words_masked)
+    perturb_fn = functools.partial(perturb_texts, span_length=span_length, pct=args.pct_words_masked, temperature=args.mask_temperature)
 
     p_sampled_text = perturb_fn([x for x in sampled_text for _ in range(n_perturbations)])
     p_original_text = perturb_fn([x for x in original_text for _ in range(n_perturbations)])
@@ -612,9 +613,9 @@ def generate_samples(raw_data, batch_size):
             data["sampled"].append(s)
 
     if args.pre_perturb_pct > 0:
-        print(f'APPLYING {args.pre_perturb_pct}, {args.pre_perturb_span_length} PRE-PERTURBATIONS')
+        print(f'APPLYING {args.pre_perturb_pct}, {args.pre_perturb_span_length}, {args.pre_perturb_temperature} PRE-PERTURBATIONS')
         load_mask_model()
-        data["sampled"] = perturb_texts(data["sampled"], args.pre_perturb_span_length, args.pre_perturb_pct, ceil_pct=True)
+        data["sampled"] = perturb_texts(data["sampled"], args.pre_perturb_span_length, args.pre_perturb_pct, ceil_pct=True, temperature=args.pre_perturb_temperature)
         load_base_model()
 
     return data
@@ -742,45 +743,6 @@ def eval_supervised(data, model):
         'loss': 1 - pr_auc,
     }
 
-def download_writing_prompts():
-    # Define the data folder path and create it if it doesn't exist
-    data_folder = './data'
-    if not os.path.exists(data_folder):
-        os.makedirs(data_folder)
-
-    # Set environment variable so Kaggle API finds kaggle.json in the current working directory
-    kaggle_config_dir = os.getcwd()  # assumes kaggle.json is here
-    os.environ['KAGGLE_CONFIG_DIR'] = kaggle_config_dir
-
-    # Define the path for kaggle.json
-    kaggle_json_path = os.path.join(kaggle_config_dir, 'kaggle.json')
-
-    # Check if kaggle.json exists
-    if not os.path.exists(kaggle_json_path):
-        raise OSError(f"Could not find kaggle.json in {kaggle_config_dir}. "
-                      "Please ensure that your kaggle.json file is in this folder or copy it to ~/.kaggle.")
-
-    # Automatically adjust file permissions to 600 if possible
-    try:
-        os.chmod(kaggle_json_path, 0o600)
-    except Exception as e:
-        print(f"Warning: Unable to change permissions on {kaggle_json_path}. {e}")
-
-    from kaggle.api.kaggle_api_extended import KaggleApi
-
-    # Instantiate and authenticate Kaggle API
-    api = KaggleApi()
-    api.authenticate()
-
-    # Define the expected dataset directory path (adjust as needed based on the unzipped structure)
-    dataset_dir = os.path.join(data_folder, 'writingPrompts')
-
-    # If the dataset isn't already downloaded, do so and unzip it
-    if not os.path.exists(dataset_dir):
-        print("Downloading ratthachat/writing-prompts dataset to", data_folder)
-        api.dataset_download_files('ratthachat/writing-prompts', path=data_folder, unzip=True)
-    else:
-        print("Dataset already downloaded at", dataset_dir)
 
 if __name__ == '__main__':
     DEVICE = "mps"
@@ -820,6 +782,7 @@ if __name__ == '__main__':
     parser.add_argument('--cache_dir', type=str, default="~/.cache")
     parser.add_argument('--access_token', type=str, default="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")
     parser.add_argument('--mask_temperature', type=float, default=1.0)
+    parser.add_argument('--pre_perturb_temperature', type=float, default=1.0)
     parser.add_argument('--generator_temperature', type=float, default=1.0)
     args = parser.parse_args()
 
@@ -896,10 +859,6 @@ if __name__ == '__main__':
         preproc_tokenizer = mask_tokenizer
 
     load_base_model()
-
-    # Get writing prompts dataset if needed
-    if args.dataset == "writing":
-        download_writing_prompts()
 
     print(f'Loading dataset {args.dataset}...')
     data = generate_data(args.dataset, args.dataset_key)
