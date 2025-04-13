@@ -745,7 +745,7 @@ def eval_supervised(data, model):
 
 
 if __name__ == '__main__':
-    DEVICE = "mps"
+    DEVICE = "cuda"
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--dataset', type=str, default="xsum")

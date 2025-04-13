@@ -17,7 +17,7 @@ trap "echo 'Job interrupted. Saving outputs...'; cp -r tmp_results/ /home/tu8435
 module purge
 module load anaconda3/2024.10
 eval "$(conda shell.bash hook)"
-conda activate /scratch/gpfs/tu8435/COS484/detect-gpt/.env/detect-gpt-env
+conda activate /scratch/gpfs/tu8435/COS484/cos484proj/.env/cos484proj-env
 
 # Redirect Hugging Face cache to scratch --> setting environment variables for duration of the run
 export TRANSFORMERS_CACHE=/scratch/gpfs/tu8435/model_cache/
