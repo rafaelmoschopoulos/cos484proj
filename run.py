@@ -807,6 +807,8 @@ if __name__ == '__main__':
         base_model_name = "openai-" + args.openai_model.replace('/', '_')
     scoring_model_string = (f"-{args.scoring_model_name}" if args.scoring_model_name else "").replace('/', '_')
     SAVE_FOLDER = f"tmp_results/{output_subfolder}{base_model_name}{scoring_model_string}-{args.mask_filling_model_name}-{sampling_string}/{START_DATE}-{START_TIME}-{precision_string}-{args.pct_words_masked}-{args.n_perturbation_rounds}-{args.dataset}-{args.n_samples}-{args.mask_temperature}-{args.generator_temperature}"
+    if args.pre_perturb_pct > 0:
+        SAVE_FOLDER += f"-{args.pre_perturb_pct}-{args.pre_perturb_span_length}-{args.pre_perturb_temperature}"
     if not os.path.exists(SAVE_FOLDER):
         os.makedirs(SAVE_FOLDER)
     print(f"Saving results to absolute path: {os.path.abspath(SAVE_FOLDER)}")
