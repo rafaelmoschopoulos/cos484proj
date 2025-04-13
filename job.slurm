@@ -7,7 +7,7 @@
 #SBATCH --time=10:00:00              # Job time limit
 #SBATCH --output=/home/tu8435/Documents/COS484/Final_Project/slurm-%x-%j.out
 #SBATCH --error=/home/tu8435/Documents/COS484/Final_Project/slurm-%x-%j.err
-#SBATCH --mail-type=END,FAIL
+#SBATCH --mail-type=BEGIN,END,FAIL
 #SBATCH --mail-user=tu8435@princeton.edu
 
 # Trap signals for cleanup (optional if you're checkpointing mid-job)
