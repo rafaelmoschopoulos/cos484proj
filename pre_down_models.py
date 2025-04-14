@@ -3,6 +3,8 @@ import transformers
 
 # List of models to download
 model_names = [
+
+    "roberta-large-openai-detector",
     "meta-llama/Llama-3.2-3B",
     "gpt2",
     "gpt2-medium",
@@ -17,7 +19,8 @@ model_names = [
     "t5-small",
     "t5-base",
     "t5-large",
-    "t5-3b"
+    "t5-3b",
+    "roberta-base-openai-detector",
 ]
 
 token = "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"
@@ -34,7 +37,9 @@ for model_name in model_names:
         print(f"Downloading {model_name} ...")
         # For causal language models or sequence-to-sequence models, use AutoModelFor... as appropriate.
         # Here we choose AutoModelForCausalLM for models that generate text (like gpt2 variants, OPT, GPT-Neo/J/NeoX, etc.)
-        if 't5' in model_name:
+        if "roberta" in model_name.lower():
+            model = transformers.AutoModelForSequenceClassification.from_pretrained(model_name, cache_dir=cache_dir)
+        if 't5' in model_name.lower():
             # For T5 models and other sequence-to-sequence models, load the seq2seq variant.
             model = transformers.AutoModelForSeq2SeqLM.from_pretrained(model_name, cache_dir=cache_dir, token=token)
         else:
