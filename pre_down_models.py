@@ -13,7 +13,6 @@ model_names = [
     "facebook/opt-2.7b",
     "EleutherAI/gpt-neo-2.7B",
     "EleutherAI/gpt-j-6B",
-    "EleutherAI/gpt-neox-20b",
     "sberbank-ai/mGPT",
     "stanford-crfm/pubmedgpt",
     "t5-small",
