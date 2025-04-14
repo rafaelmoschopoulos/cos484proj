@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=detectgpt-scale
+#SBATCH --job-name=cos484proj-figure7
 #SBATCH --partition=gpu-short         # GPU jobs up to 24h
 #SBATCH --gres=gpu:1                  # Request 1 GPU (A100 40GB)
 #SBATCH --cpus-per-task=4            # Number of CPU cores
