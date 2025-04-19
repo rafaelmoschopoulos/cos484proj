@@ -1,1 +1,0 @@
-python run.py --output_name main --base_model_name gpt2 --mask_filling_model_name t5-base --n_perturbation_list 10 --n_samples 100 --pct_words_masked 0.3 --span_length 2 --mask_temperature 2 --generator_temperature 2 --cache_dir ./cache --pre_perturb_pct 0.1 --pre_perturb_temperature 3
