@@ -20,6 +20,8 @@ model_names = [
     "t5-large",
     "t5-3b",
     "roberta-base-openai-detector",
+    "google/mt5-xl",
+    "t5-11b"
 ]
 
 token = "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"
