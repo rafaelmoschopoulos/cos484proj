@@ -1,10 +1,10 @@
 #!/bin/bash
 #SBATCH --job-name=cos484proj-figure7
-#SBATCH --partition=gpu-short         # GPU jobs up to 24h
+#SBATCH --partition=gpu-test         # GPU jobs up to 24h
 #SBATCH --gres=gpu:1                  # Request 1 GPU (A100 40GB)
-#SBATCH --cpus-per-task=1            # Number of CPU cores
-#SBATCH --mem=32G                    # System memory
-#SBATCH --time=07:59:59              # Job time limit
+#SBATCH --cpus-per-task=4            # Number of CPU cores
+#SBATCH --mem=16G                    # System memory
+#SBATCH --time=01:00:00              # Job time limit
 #SBATCH --output=/home/tu8435/Documents/COS484/Final_Project/slurm-%x-%j.out
 #SBATCH --error=/home/tu8435/Documents/COS484/Final_Project/slurm-%x-%j.err
 #SBATCH --mail-type=BEGIN,END,FAIL
