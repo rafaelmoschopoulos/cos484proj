@@ -1,10 +1,10 @@
 #!/bin/bash
-#SBATCH --job-name=cos484proj-supervised_fig_4
+#SBATCH --job-name=cos484proj-supervised_fig_4_part1
 #SBATCH --partition=gpu-short         # GPU jobs up to 24h
 #SBATCH --gres=gpu:1                  # Request 1 GPU (A100 40GB)
 #SBATCH --cpus-per-task=1            # Number of CPU cores
 #SBATCH --mem=32G                    # System memory
-#SBATCH --time=05:59:59              # Job time limit
+#SBATCH --time=15:59:59            # Job time limit
 #SBATCH --output=/home/tu8435/Documents/COS484/Final_Project/slurm-%x-%j.out
 #SBATCH --error=/home/tu8435/Documents/COS484/Final_Project/slurm-%x-%j.err
 #SBATCH --mail-type=BEGIN,END,FAIL
@@ -30,8 +30,8 @@ mkdir -p /home/tu8435/Documents/COS484/Final_Project
 SCRATCH_RUN_DIR="/scratch/gpfs/tu8435/runs/slurm_$SLURM_JOB_ID"
 mkdir -p "$SCRATCH_RUN_DIR"
 
-# Run the paper script (supervised_fig_4.sh) and redirect output to your home dir
-srun bash paper_scripts/supervised_fig_4.sh > "$SCRATCH_RUN_DIR/output.log" 2>&1 & TRAIN_PID=$!
+# Run the paper script (supervised_fig_4_part1.sh) and redirect output to your home dir
+srun bash paper_scripts/supervised_fig_4_part1.sh > "$SCRATCH_RUN_DIR/output.log" 2>&1 & TRAIN_PID=$!
 
 # Wait for the training job to finish
 wait $TRAIN_PID
