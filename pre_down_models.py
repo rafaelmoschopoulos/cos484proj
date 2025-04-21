@@ -3,25 +3,30 @@ import transformers
 
 # List of models to download
 model_names = [
+   "roberta-large-openai-detector",
+   "roberta-base-openai-detector",
 
-   #"roberta-large-openai-detector",
-   #"meta-llama/Llama-3.2-3B",
-   #"gpt2",
-   #"gpt2-medium",
-   #"gpt2-large",
-   #"gpt2-xl",
-   #"facebook/opt-2.7b",
-   #"EleutherAI/gpt-neo-2.7B",
-   #"EleutherAI/gpt-j-6B",
+   "gpt2",
+   "gpt2-medium",
+   "gpt2-large",
+   "gpt2-xl",
+
+   "facebook/opt-2.7b",
+   "meta-llama/Llama-3.2-3B",
+
+   "EleutherAI/gpt-neo-2.7B",
+   "EleutherAI/gpt-j-6B",
+   "EleutherAI/gpt-neox-20b",
+
    "sberbank-ai/mGPT",
    "stanford-crfm/pubmedgpt",
-   #"t5-small",
-   #"t5-base",
-   #"t5-large",
-   #"t5-3b",
-   #"roberta-base-openai-detector",
-   #"google/mt5-xl",
+
+   "t5-small",
+   "t5-base",
+   "t5-large",
+   "t5-3b",
    "t5-11b"
+   "google/mt5-xl",
 ]
 
 token = "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"
