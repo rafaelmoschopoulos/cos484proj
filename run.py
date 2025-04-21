@@ -91,7 +91,6 @@ def replace_masks(texts, temperature=1):
     stop_id = mask_tokenizer.encode(f"<extra_id_{max(n_expected)}>")[0]
     tokens = mask_tokenizer(texts, return_tensors="pt", padding=True).to(DEVICE)
     outputs = mask_model.generate(**tokens, max_length=150, do_sample=True, top_p=args.mask_top_p, num_return_sequences=1, eos_token_id=stop_id, temperature=temperature)
-    print(f"T5 with TEMP: {temperature}")
     return mask_tokenizer.batch_decode(outputs, skip_special_tokens=False)
 
 
@@ -673,7 +672,6 @@ def load_base_model_and_tokenizer(name):
             base_model_kwargs.update(dict(torch_dtype=torch.float16))
         if 'gpt-j' in name:
             base_model_kwargs.update(dict(revision='float16'))
-        print(name)
         base_model = transformers.AutoModelForCausalLM.from_pretrained(name, **base_model_kwargs, cache_dir=cache_dir, token=args.access_token, local_files_only=True)
     else:
         base_model = None
@@ -746,7 +744,7 @@ def eval_supervised(data, model):
 
 
 if __name__ == '__main__':
-    DEVICE = "cuda"
+    DEVICE = "mps"
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--dataset', type=str, default="xsum")
@@ -878,7 +876,8 @@ if __name__ == '__main__':
         del base_model
         del base_tokenizer
         torch.cuda.empty_cache()
-        base_model, base_tokenizer = load_base_model_and_tokenizer(args.scoring_model_name)
+        scoring_model_name_fixed = os.path.join(cache_dir, args.scoring_model_name.replace('/', '--'))
+        base_model, base_tokenizer = load_base_model_and_tokenizer(scoring_model_name_fixed)
         load_base_model()  # Load again because we've deleted/replaced the old model
 
     # write the data to a json file in the save folder
@@ -896,8 +895,8 @@ if __name__ == '__main__':
             entropy_criterion = lambda text: get_entropy(text)
             baseline_outputs.append(run_baseline_threshold_experiment(entropy_criterion, "entropy", n_samples=n_samples))
 
-        baseline_outputs.append(eval_supervised(data, model='roberta-base-openai-detector'))
-        baseline_outputs.append(eval_supervised(data, model='roberta-large-openai-detector'))
+        baseline_outputs.append(eval_supervised(data, model=os.path.join(cache_dir, 'roberta-base-openai-detector')))
+        baseline_outputs.append(eval_supervised(data, model=os.path.join(cache_dir, 'roberta-large-openai-detector')))
 
     outputs = []
 
