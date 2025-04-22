@@ -25,7 +25,7 @@ model_names = [
    "t5-base",
    "t5-large",
    "t5-3b",
-   "t5-11b"
+   "t5-11b",
    "google/mt5-xl",
 ]
 
