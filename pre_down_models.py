@@ -32,7 +32,7 @@ model_names = [
 token = "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"
 
 # Specify your cache directory (ensure it exists)
-cache_dir = "./pre_cache"
+cache_dir = "/scratch/gpfs/tu8435/model_cache"
 if not os.path.exists(cache_dir):
     os.makedirs(cache_dir)
 
