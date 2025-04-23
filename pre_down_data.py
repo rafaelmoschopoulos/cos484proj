@@ -47,5 +47,5 @@ def pre_download_datasets(cache_dir):
 
 if __name__ == "__main__":
     # Replace with your desired cache directory path. This should be the same value used in run.py.
-    cache_dir = "/scratch/gpfs/tu8435/data_cache/"
+    cache_dir = "/scratch/gpfs/tu8435/model_cache/"
     pre_download_datasets(cache_dir)

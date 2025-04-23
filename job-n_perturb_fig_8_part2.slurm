@@ -3,7 +3,7 @@
 #SBATCH --partition=gpu-medium         # GPU jobs up to 72h
 #SBATCH --gres=gpu:1                  # Request 1 GPU (A100 40GB)
 #SBATCH --cpus-per-task=1            # Number of CPU cores
-#SBATCH --mem=32G                    # System memory
+#SBATCH --mem=128G                    # System memory
 #SBATCH --time=71:59:59              # Job time limit
 #SBATCH --output=/home/tu8435/Documents/COS484/Final_Project/slurm-%x-%j.out
 #SBATCH --error=/home/tu8435/Documents/COS484/Final_Project/slurm-%x-%j.err
