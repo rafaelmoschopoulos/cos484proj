@@ -1,0 +1,15 @@
+python run.py --output_name generator_temperature --base_model_name gpt2-xl --mask_filling_model_name t5-3b --n_perturbation_list 50 --n_samples 150 --pct_words_masked 0.3 --span_length 2 --generator_temperature 0.1 --cache_dir ./cache
+python run.py --output_name generator_temperature --base_model_name gpt2-xl --mask_filling_model_name t5-3b --n_perturbation_list 50 --n_samples 150 --pct_words_masked 0.3 --span_length 2 --generator_temperature 0.4 --cache_dir ./cache
+python run.py --output_name generator_temperature --base_model_name gpt2-xl --mask_filling_model_name t5-3b --n_perturbation_list 50 --n_samples 150 --pct_words_masked 0.3 --span_length 2 --generator_temperature 0.7 --cache_dir ./cache
+python run.py --output_name generator_temperature --base_model_name gpt2-xl --mask_filling_model_name t5-3b --n_perturbation_list 50 --n_samples 150 --pct_words_masked 0.3 --span_length 2 --generator_temperature 1.0 --cache_dir ./cache
+python run.py --output_name generator_temperature --base_model_name gpt2-xl --mask_filling_model_name t5-3b --n_perturbation_list 50 --n_samples 150 --pct_words_masked 0.3 --span_length 2 --generator_temperature 1.3 --cache_dir ./cache
+python run.py --output_name generator_temperature --base_model_name gpt2-xl --mask_filling_model_name t5-3b --n_perturbation_list 50 --n_samples 150 --pct_words_masked 0.3 --span_length 2 --generator_temperature 1.6 --cache_dir ./cache
+
+
+
+python run.py --output_name generator_temperature --base_model_name gpt2-xl --mask_filling_model_name t5-3b --n_perturbation_list 50 --n_samples 150 --pct_words_masked 0.3 --span_length 2 --generator_temperature 0.1 --cache_dir ./cache --dataset squad --dataset_key context
+python run.py --output_name generator_temperature --base_model_name gpt2-xl --mask_filling_model_name t5-3b --n_perturbation_list 50 --n_samples 150 --pct_words_masked 0.3 --span_length 2 --generator_temperature 0.4 --cache_dir ./cache --dataset squad --dataset_key context
+python run.py --output_name generator_temperature --base_model_name gpt2-xl --mask_filling_model_name t5-3b --n_perturbation_list 50 --n_samples 150 --pct_words_masked 0.3 --span_length 2 --generator_temperature 0.7 --cache_dir ./cache --dataset squad --dataset_key context
+python run.py --output_name generator_temperature --base_model_name gpt2-xl --mask_filling_model_name t5-3b --n_perturbation_list 50 --n_samples 150 --pct_words_masked 0.3 --span_length 2 --generator_temperature 1.0 --cache_dir ./cache --dataset squad --dataset_key context
+python run.py --output_name generator_temperature --base_model_name gpt2-xl --mask_filling_model_name t5-3b --n_perturbation_list 50 --n_samples 150 --pct_words_masked 0.3 --span_length 2 --generator_temperature 1.3 --cache_dir ./cache --dataset squad --dataset_key context
+python run.py --output_name generator_temperature --base_model_name gpt2-xl --mask_filling_model_name t5-3b --n_perturbation_list 50 --n_samples 150 --pct_words_masked 0.3 --span_length 2 --generator_temperature 1.6 --cache_dir ./cache --dataset squad --dataset_key context
