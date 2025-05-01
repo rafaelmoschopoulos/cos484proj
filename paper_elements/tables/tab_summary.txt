@@ -1,0 +1,5 @@
+$\log p(x)$ & #DIV/0! & 0.88 & #DIV/0! & 0.86 & #DIV/0! & 0.96 \\
+\textsc{Rank} & #DIV/0! & 0.76 & #DIV/0! & 0.80 & #DIV/0! & 0.83 \\
+\textsc{LogRank} & #DIV/0! & 0.91 & #DIV/0! & 0.90 & #DIV/0! & 0.98 \\
+\textsc{Entropy} & #DIV/0! & 0.55 & #DIV/0! & 0.54 & #DIV/0! & 0.33 \\
+DetectGPT & #DIV/0! & 0.97 & #DIV/0! & 0.91 & #DIV/0! & 0.97 \\

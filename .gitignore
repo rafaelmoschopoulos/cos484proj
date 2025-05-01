@@ -1,7 +1,8 @@
-cache
-data
-tmp_results
-results
+./experiment_code/pre_cache
+./experiment_code/data
+./experiment_code/tmp_results
+./experiment_code/results
 .env/cos484proj-env/
 __pycache__
-plots/.ipynb_checkpoints/
+paper_elements/plots/.ipynb_checkpoints/
+.DS_Store

@@ -1,4 +1,0 @@
-python run.py --cache_dir /scratch/gpfs/tu8435/model_cache --output_name n_perturb --base_model_name EleutherAI/gpt-j-6B --mask_filling_model_name t5-large --n_perturbation_list 1,10,100,1000 --n_samples 100 --pct_words_masked 0.3 --span_length 2 --skip_baselines
-python run.py --cache_dir /scratch/gpfs/tu8435/model_cache --output_name n_perturb --base_model_name EleutherAI/gpt-j-6B --mask_filling_model_name t5-large --n_perturbation_list 1,10,100,1000 --n_samples 100 --pct_words_masked 0.3 --span_length 2 --dataset squad --dataset_key context --skip_baselines 
-python run.py --cache_dir /scratch/gpfs/tu8435/model_cache --output_name n_perturb --base_model_name EleutherAI/gpt-j-6B --mask_filling_model_name t5-large --n_perturbation_list 1,10,100,1000 --n_samples 100 --pct_words_masked 0.3 --span_length 2 --dataset writing --skip_baselines 
-

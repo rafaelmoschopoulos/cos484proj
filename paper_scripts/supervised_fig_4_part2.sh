@@ -1,2 +1,0 @@
-python run.py --cache_dir /scratch/gpfs/tu8435/model_cache --output_name supervised --base_model_name stanford-crfm/pubmedgpt --mask_filling_model_name t5-11b --n_perturbation_list 100 --n_samples 200 --pct_words_masked 0.3 --span_length 2 --dataset pubmed 
-python run.py --cache_dir /scratch/gpfs/tu8435/model_cache --output_name supervised --base_model_name gpt2-xl --mask_filling_model_name t5-11b --n_perturbation_list 100 --n_samples 200 --pct_words_masked 0.3 --span_length 2 

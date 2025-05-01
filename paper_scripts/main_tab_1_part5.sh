@@ -1,1 +1,0 @@
-python run.py --cache_dir /scratch/gpfs/tu8435/model_cache --output_name main_table_1 --batch_size 20 --base_model_name EleutherAI/gpt-neox-20b --mask_filling_model_name t5-11b --n_perturbation_list 100 --n_samples 500 --pct_words_masked 0.3 --span_length 2 --dataset writing

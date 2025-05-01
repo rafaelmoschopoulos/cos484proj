@@ -1,0 +1,2 @@
+python run.py --cache_dir /scratch/gpfs/tu8435/model_cache --output_name supervised --base_model_name sberbank-ai/mGPT --mask_filling_model_name google/mt5-xl --n_perturbation_list 100 --n_samples 200 --pct_words_masked 0.3 --span_length 2 --dataset english 
+python run.py --cache_dir /scratch/gpfs/tu8435/model_cache --output_name supervised --base_model_name sberbank-ai/mGPT --mask_filling_model_name google/mt5-xl --n_perturbation_list 100 --n_samples 200 --pct_words_masked 0.3 --span_length 2 --dataset german 
