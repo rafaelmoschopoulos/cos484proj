@@ -4,3 +4,4 @@ tmp_results
 results
 .env/cos484proj-env/
 __pycache__
+plots/.ipynb_checkpoints/
