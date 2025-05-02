@@ -1,5 +1,5 @@
-$\log p(x)$ & #DIV/0! & 0.88 & #DIV/0! & 0.86 & #DIV/0! & 0.96 \\
-\textsc{Rank} & #DIV/0! & 0.76 & #DIV/0! & 0.80 & #DIV/0! & 0.83 \\
-\textsc{LogRank} & #DIV/0! & 0.91 & #DIV/0! & 0.90 & #DIV/0! & 0.98 \\
-\textsc{Entropy} & #DIV/0! & 0.55 & #DIV/0! & 0.54 & #DIV/0! & 0.33 \\
-DetectGPT & #DIV/0! & 0.97 & #DIV/0! & 0.91 & #DIV/0! & 0.97 \\
+$\log p(x)$ & 0.90 & 0.88 & 0.88 & 0.86 & 0.97* & 0.96 \\
+\textsc{Rank} & 0.76 & 0.76 & 0.80 & 0.80 & 0.83 & 0.83 \\
+\textsc{LogRank} & 0.92* & 0.91* & 0.91* & 0.90* & \textbf{0.98} & \textbf{0.98} \\
+\textsc{Entropy} & 0.53 & 0.55 & 0.54 & 0.54 & 0.33 & 0.33 \\
+DetectGPT & \textbf{0.97} & \textbf{0.97} & \textbf{0.92} & \textbf{0.91} & 0.97 & 0.97* \\
