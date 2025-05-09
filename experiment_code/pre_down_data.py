@@ -2,6 +2,9 @@ import os
 import datasets
 import custom_datasets
 
+# Replace with your desired cache directory path. This should be the same value used in run.py.
+cache_dir = ""
+
 def pre_download_datasets(cache_dir):
     # Create the cache directory if it doesn't exist
     if not os.path.exists(cache_dir):
@@ -46,6 +49,4 @@ def pre_download_datasets(cache_dir):
             print(f"Error pre-downloading dataset '{ds}': {e}")
 
 if __name__ == "__main__":
-    # Replace with your desired cache directory path. This should be the same value used in run.py.
-    cache_dir = "/scratch/gpfs/tu8435/model_cache/"
     pre_download_datasets(cache_dir)

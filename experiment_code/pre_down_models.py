@@ -29,10 +29,11 @@ model_names = [
    "google/mt5-xl",
 ]
 
-token = "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"
+token = ""
 
 # Specify your cache directory (ensure it exists)
-cache_dir = "/scratch/gpfs/tu8435/model_cache"
+cache_dir = ""
+
 if not os.path.exists(cache_dir):
     os.makedirs(cache_dir)
 
