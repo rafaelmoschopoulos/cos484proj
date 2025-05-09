@@ -30,3 +30,9 @@ To exactly replicate our experiments, `cd experiment_code` and then `sh ./paper_
 
 **Note: Intermediate results are saved in `tmp_results/`. If your experiment completes successfully, the results will be moved into the `results/` directory. These folders will be generated wherever `run.py` is located.**
 
+## Plots/visuals
+
+The directory `./paper_elements/plots` contains the Jupyter Notebook used to generate all graphs in our paper. The experimental results were copied directly from the output of `run.py` into the notebook.
+
+`./paper_elements/tables` contains an spreadsheet with the DetectGPT vs. baseline comparison experiment results, also copied directly from the `run.py` output. `get_latex_formatted.py` converts the spreadsheet to ready-to-copy-paste Latex code.
+
