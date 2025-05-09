@@ -1,10 +1,10 @@
-# DetectGPT: Zero-Shot Machine-Generated Text Detection using Probability Curvature
+# DetectGPT Revisited: Zero-Shot LLM-Generated Text Detection
 
-## Official implementation of the experiments in the [DetectGPT paper](https://arxiv.org/abs/2301.11305v1).
-
-An interactive demo of DetectGPT can be found [here](https://detectgpt.ericmitchell.ai).
+## Princeton University COS484 Spring 25 Final Project. Team members: Rafael Moschopoulos, Tersoo Upaa Jr., Bryan Boateng
 
 ## Instructions
+
+**The code in this repo is adapted directly from the original [DetectGPT codebase](https://github.com/eric-mitchell/detect-gpt)**
 
 First, install the Python dependencies:
 
@@ -12,19 +12,21 @@ First, install the Python dependencies:
     source env/bin/activate
     pip install -r requirements.txt
 
-Second, run any of the scripts (or just individual commands) in `paper_scripts/`.
+The code we used to carry out experiments is in `experiment_code/`.
 
-If you'd like to run the WritingPrompts experiments, you'll need to download the WritingPrompts data from [here](https://www.kaggle.com/datasets/ratthachat/writing-prompts). Save the data into a directory `data/writingPrompts`.
+You will need to pre-download all the datasets and models you will use. To do so, set a persistent cache directory in both pre_down_data.py and pre_down_models.py.
 
-**Note: Intermediate results are saved in `tmp_results/`. If your experiment completes successfully, the results will be moved into the `results/` directory.**
+Uncomment models you don't wish to use to save space/download time.
 
-## Citing the paper
-If our work is useful for your own, you can cite us with the following BibTex entry:
+Get a HF API key and enter it in the appropriate field in the pre_down_models.py file.
 
-    @misc{mitchell2023detectgpt,
-        url = {https://arxiv.org/abs/2301.11305},
-        author = {Mitchell, Eric and Lee, Yoonho and Khazatsky, Alexander and Manning, Christopher D. and Finn, Chelsea},
-        title = {DetectGPT: Zero-Shot Machine-Generated Text Detection using Probability Curvature},
-        publisher = {arXiv},
-        year = {2023},
-    }
+Get a kaggle.json API key and put it in the same directory as pre_down_data.py. This is necessary for the WritingPrompts dataset.
+
+Run `pre_down_models.py` and `pre_down_data.py`. This will take a while and use hundreds of GBs of storage.
+
+The file `experiment_code/run.py` contains all code required to perform experiments with different models/hyperparameters, etc.
+
+To exactly replicate our experiments, `cd experiment_code` and then `sh ./paper_scripts/<desired script>`. Those scripts invoke `run.py` with the exact parameters we used for our experiments. Change the --cache_dir argument to whatever you set in the `pre_down_*` files.
+
+**Note: Intermediate results are saved in `tmp_results/`. If your experiment completes successfully, the results will be moved into the `results/` directory. These folders will be generated wherever `run.py` is located.**
+

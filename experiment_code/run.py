@@ -779,7 +779,7 @@ if __name__ == '__main__':
     parser.add_argument('--random_fills', action='store_true')
     parser.add_argument('--random_fills_tokens', action='store_true')
     parser.add_argument('--cache_dir', type=str, default="~/.cache")
-    parser.add_argument('--access_token', type=str, default="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")
+    parser.add_argument('--access_token', type=str, default="")
     parser.add_argument('--mask_temperature', type=float, default=1.0)
     parser.add_argument('--pre_perturb_temperature', type=float, default=1.0)
     parser.add_argument('--generator_temperature', type=float, default=1.0)
