@@ -30,8 +30,6 @@ model_names = [
 ]
 
 token = ""
-
-# Specify your cache directory (ensure it exists)
 cache_dir = ""
 
 if not os.path.exists(cache_dir):
@@ -45,12 +43,9 @@ for model_name in model_names:
     os.makedirs(save_path, exist_ok=True)
     try:
         print(f"Downloading {model_name} ...")
-        # For causal language models or sequence-to-sequence models, use AutoModelFor... as appropriate.
-        # Here we choose AutoModelForCausalLM for models that generate text (like gpt2 variants, OPT, GPT-Neo/J/NeoX, etc.)
         if "roberta" in model_name.lower():
             model = transformers.AutoModelForSequenceClassification.from_pretrained(model_name, cache_dir=cache_dir, force_download=True)
         if 't5' in model_name.lower():
-            # For T5 models and other sequence-to-sequence models, load the seq2seq variant.
             model = transformers.AutoModelForSeq2SeqLM.from_pretrained(model_name, cache_dir=cache_dir, token=token)
         else:
             model = transformers.AutoModelForCausalLM.from_pretrained(model_name, cache_dir=cache_dir, token=token, force_download=True)
