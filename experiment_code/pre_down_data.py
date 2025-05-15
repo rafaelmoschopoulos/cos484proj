@@ -35,5 +35,4 @@ def pre_download_datasets(cache_dir):
         except Exception as e:
             print(f"Error pre-downloading dataset '{ds}': {e}")
 
-if __name__ == "__main__":
-    pre_download_datasets(cache_dir)
+pre_download_datasets(cache_dir)
